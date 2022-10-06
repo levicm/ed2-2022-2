@@ -1,4 +1,4 @@
-package a02_arvore_binaria;
+package a03_01_arvore_binaria;
 
 public class BinaryTree {
 
@@ -62,47 +62,53 @@ public class BinaryTree {
 	}
 
 	public BTNode find(Object info) {
-		return findPreOrder(root, info);
+		FindVisitor visitor = new FindVisitor(info);
+		traversalPreOrder(visitor);
+		return visitor.result;
 	}
 
-	private static BTNode findPreOrder(BTNode node, Object info) {
-		BTNode result = null;
-		if (node != null) {
+	class FindVisitor extends BTAbstractVisitor {
+
+		private Object info;
+		private BTNode result;
+
+		public FindVisitor(Object info) {
+			this.info = info;
+		}
+
+		public void visit(BTNode node) {
 			if (node.getInfo().equals(info)) {
-				result = node;
-			}
-			if (result == null) {
-				result = findPreOrder(node.getLeft(), info);
-			}
-			if (result == null) {
-				result = findPreOrder(node.getRight(), info);
+				this.result = node;
 			}
 		}
-		return result;
 	}
 
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		buildStringInOder(root, sb);
+		StringVisitor visitor = new StringVisitor(sb);
+		traversalInOrder(visitor);
 		return sb.toString();
 	}
 
-	private void buildStringInOder(BTNode node, StringBuilder sb) {
-		if (node != null) {
+	class StringVisitor extends BTAbstractVisitor {
+
+		private StringBuilder sb;
+
+		public StringVisitor(StringBuilder sb) {
+			this.sb = sb;
+		}
+
+		public void beforeLeft(BTNode node) {
 			sb.append("(");
-			if (node.getLeft() != null) {
-				buildStringInOder(node.getLeft(), sb);
-			}
+		}
 
-			sb.append(" ");
-			sb.append(node.getInfo());
-			sb.append(" ");
-
-			if (node.getRight() != null) {
-				buildStringInOder(node.getRight(), sb);
-			}
+		public void afterRight(BTNode node) {
 			sb.append(")");
+		}
+
+		public void visit(BTNode node) {
+			sb.append(node.getInfo());
 		}
 	}
 
@@ -142,4 +148,60 @@ public class BinaryTree {
 		}
 	}
 
+	public void traversalPostOrder(BTVisitor visitor) {
+		traversalPostOrder(root, visitor);
+	}
+
+	private void traversalPostOrder(BTNode node, BTVisitor visitor) {
+		if (node != null) {
+			if (node.getLeft() != null) {
+				visitor.beforeLeft(node);
+				traversalInOrder(node.getLeft(), visitor);
+				visitor.afterLeft(node);
+			}
+			if (node.getRight() != null) {
+				visitor.beforeRight(node);
+				traversalInOrder(node.getRight(), visitor);
+				visitor.afterRight(node);
+			}
+			visitor.visit(node);
+		}
+	}
+
+	public BinaryTree copy() {
+		BinaryTree copyTree = new BinaryTree();
+		if (root != null) {
+			copyTree.creatRoot(root.getInfo());
+		}
+		doCopy(root, copyTree.getRoot(), copyTree);
+
+		return copyTree;
+	}
+
+	private void doCopy(BTNode thisNode, BTNode copyNode, BinaryTree copyTree) {
+		if (thisNode.getLeft() != null) {
+			BTNode copyLeft = copyTree.insertLeft(thisNode.getLeft().getInfo(), 
+					copyNode);
+			doCopy(thisNode.getLeft(), copyLeft, copyTree);
+		}
+		if (thisNode.getRight() != null) {
+			BTNode copyRight = copyTree.insertRight(thisNode.getRight().getInfo(), 
+					copyNode);
+			doCopy(thisNode.getRight(), copyRight, copyTree);
+		}
+	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
