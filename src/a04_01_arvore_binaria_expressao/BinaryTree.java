@@ -1,4 +1,4 @@
-package a03_01_arvore_binaria;
+package a04_01_arvore_binaria_expressao;
 
 public class BinaryTree {
 
@@ -121,10 +121,14 @@ public class BinaryTree {
 			visitor.visit(node);
 		}
 		if (node.getLeft() != null) {
+			visitor.beforeLeft(node);
 			traversalPreOrder(node.getLeft(), visitor);
+			visitor.afterLeft(node);
 		}
 		if (node.getRight() != null) {
+			visitor.beforeRight(node);
 			traversalPreOrder(node.getRight(), visitor);
+			visitor.afterRight(node);
 		}
 	}
 

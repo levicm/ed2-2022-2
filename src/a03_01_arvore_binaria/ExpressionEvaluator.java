@@ -8,7 +8,7 @@ public class ExpressionEvaluator {
 		this.tree = tree;
 	}
 	
-	public Integer evaluate() {
+	public Double evaluate() {
 		return ExpressionTool.evaluate(tree.getRoot());
 	}
 }

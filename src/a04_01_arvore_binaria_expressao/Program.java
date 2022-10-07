@@ -1,16 +1,20 @@
-package a03_01_arvore_binaria;
+package a04_01_arvore_binaria_expressao;
 
 public class Program {
 
 	public static void main(String[] args) {
 		BinaryTree tree1 = getTree1();
 		System.out.println(tree1);
-		System.out.println(ExpressionTool.evaluate(tree1.getRoot()));
+
+		ExpressionVisitor evaluator = new ExpressionVisitor();
+		tree1.traversalPostOrder(evaluator);
+		System.out.println(evaluator.getResult());
 
 		BinaryTree tree2 = getTree2();
 		System.out.println(tree2);
-		ExpressionEvaluator evaluator = new ExpressionEvaluator(tree2);
-		System.out.println(evaluator.evaluate());
+		ExpressionVisitor evaluator2 = new ExpressionVisitor();
+		tree2.traversalPostOrder(evaluator2);
+		System.out.println(evaluator2.getResult());
 	}
 	
 	private static BinaryTree getTree1() {
