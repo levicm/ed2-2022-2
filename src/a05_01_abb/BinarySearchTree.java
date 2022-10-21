@@ -75,7 +75,7 @@ public class BinarySearchTree {
 		}
 		return node;
 	}
-	
+
 	public BSTNode next(BSTNode node) {
 		BSTNode result = null;
 		if (node.getRight() != null) {
@@ -89,9 +89,15 @@ public class BinarySearchTree {
 		}
 		return result;
 	}
-	
+
 	public void remove(Comparable info) {
 		BSTNode node = search(info);
+		if (node != null) {
+			remove(node);
+		}
+	}
+
+	private void remove(BSTNode node) {
 		if (isLeaf(node)) {
 			// Não tem nenhum filho
 			// Remove do pai este nó
@@ -105,24 +111,46 @@ public class BinarySearchTree {
 		} else {
 			if (node.getLeft() != null && node.getRight() != null) {
 				// Tem os dois filhos
-				
+				BSTNode maxLeftChild = maxBelow(node.getLeft());
+				remove(maxLeftChild);
+				replace(node, maxLeftChild);
 			} else {
-				// Tem apenas um filho
-				BSTNode nodeToMove = null;
+				// Tem apenas um filho, o nó a substituir será o filho
+				BSTNode child = null;
 				if (node.getLeft() != null) {
-					nodeToMove = node.getLeft(); 
+					child = node.getLeft();
 				} else {
-					nodeToMove = node.getRight(); 
+					child = node.getRight();
 				}
-				nodeToMove.setParent(node.getParent());
-				if (node.getParent().getLeft() == node) {
-					node.getParent().setLeft(nodeToMove);
+				BSTNode parent = node.getParent();
+				if (parent.getLeft() == node) {
+					parent.setLeft(child);
 				} else {
-					node.getParent().setRight(nodeToMove);
+					parent.setRight(child);
 				}
-				// Desliga o pai do nó
-				node.setParent(null);
+				child.setParent(parent);
 			}
+			// Desliga os ponteiros no antigo nó
+			node.setParent(null);
+			node.setLeft(null);
+			node.setRight(null);
+		}
+	}
+	
+	private void replace(BSTNode oldNode, BSTNode newNode) {
+		newNode.setParent(oldNode.getParent());
+		if (oldNode.getLeft() != newNode) {
+			newNode.setLeft(oldNode.getLeft());
+		}
+		if (oldNode.getRight() != newNode) {
+			newNode.setRight(oldNode.getRight());
+		}
+		
+		BSTNode oldParent = oldNode.getParent();
+		if (oldParent.getLeft() == oldNode) {
+			oldParent.setLeft(newNode);
+		} else {
+			oldParent.setRight(newNode);
 		}
 	}
 
@@ -133,7 +161,7 @@ public class BinarySearchTree {
 			return Side.RIGHT;
 		}
 	}
-	
+
 	public boolean isLeaf(BSTNode node) {
 		return node.getLeft() == null && node.getRight() == null;
 	}
