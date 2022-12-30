@@ -1,4 +1,4 @@
-package a10_hash_01;
+package a14_hash_02;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -38,8 +38,18 @@ public class TabelaEspalhamento {
 	}
 
 	private int calculaIndice(String chave) {
-//		System.out.println(chave.toLowerCase().charAt(0) + ":" + ((byte)chave.toLowerCase().charAt(0))+":"+(chave.toLowerCase().charAt(0) % SIZE));
-		return chave.toLowerCase().charAt(0) % SIZE;
+		int valor = calculaValorChave(chave);
+		int resultado = valor % SIZE; 
+		System.out.println(chave.toLowerCase().charAt(0) + ":" + valor +":"+resultado);
+		return resultado;
+	}
+
+	private int calculaValorChave(String chave) {
+		int resultado = 1;
+		for (int i = 0; i < chave.length(); ++i) {
+			resultado += (int) Math.pow((int) chave.toLowerCase().charAt(i) - 96, i);
+		}
+		return resultado;
 	}
 
 	public String toString() {

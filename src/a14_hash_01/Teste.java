@@ -1,4 +1,4 @@
-package a10_hash_01;
+package a14_hash_01;
 
 public class Teste {
 
